@@ -19,12 +19,11 @@ public class PricingService {
      */
     private static final Map<Long, Price> PRICES = LongStream
             .range(1, 20)
-            .mapToObj(i -> new Price("USD", randomPrice(), i))
+            .mapToObj(i -> new Price(i, "USD", randomPrice()))
             .collect(Collectors.toMap(Price::getVehicleId, p -> p));
 
     /**
      * If a valid vehicle ID, gets the price of the vehicle from the stored array.
-     * @param vehicleId ID number of the vehicle the price is requested for.
      * @return price of the requested vehicle
      * @throws PriceException vehicleID was not found
      */

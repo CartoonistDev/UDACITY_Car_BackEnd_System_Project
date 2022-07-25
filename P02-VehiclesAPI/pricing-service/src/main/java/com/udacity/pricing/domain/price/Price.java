@@ -19,7 +19,7 @@ public class Price {
     public Price() {
     }
 
-    public Price(String currency, BigDecimal price, Long vehicleId) {
+    public Price(Long vehicleId,String currency, BigDecimal price) {
         this.currency = currency;
         this.price = price;
         this.vehicleId = vehicleId;
