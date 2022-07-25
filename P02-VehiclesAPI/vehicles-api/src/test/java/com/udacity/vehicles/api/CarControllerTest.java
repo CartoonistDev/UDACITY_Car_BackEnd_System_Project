@@ -99,6 +99,7 @@ public class CarControllerTest {
          *   below (the vehicle will be the first in the list).
          */
 
+
     }
 
     /**
@@ -111,9 +112,9 @@ public class CarControllerTest {
          * TODO: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
-        Car car = getCar();
         mvc.perform(
-                get("cars/{id}", car.getId())
+                get(new URI("/cars"))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -130,11 +131,11 @@ public class CarControllerTest {
          *   should utilize the car from `getCar()` below.
          */
 
-        Car car = getCar();
         mvc.perform(
-                delete("car", car.getId())
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                delete(new URI("/cars/501"))
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isNoContent());
     }
 
     /**
