@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS PRICE (
-  vehicleId INT PRIMARY KEY auto_increment,
-  currency VARCHAR(255) NOT NULL,
-  price INT NOT NULL
+    vehicleId INT,
+    currency VARCHAR(10),
+    price INT,
+    id INT PRIMARY KEY auto_increment
 );
