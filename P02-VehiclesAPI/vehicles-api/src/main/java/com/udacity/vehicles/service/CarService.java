@@ -23,13 +23,17 @@ public class CarService {
     private MapsClient mapsClient;
     private PriceClient priceClient;
 
-//    public CarService(CarRepository repository) {
-//        /**
-//         * TODO: Add the Maps and Pricing Web Clients you create
-//         *   in `VehiclesApiApplication` as arguments and set them here.
-//         */
-//        this.repository = repository;
-//    }
+    public CarService(CarRepository repository, MapsClient mapsClient, PriceClient priceClient) {
+        /**
+         * TODO: Add the Maps and Pricing Web Clients you create
+         *   in `VehiclesApiApplication` as arguments and set them here.
+         */
+        this.repository = repository;
+
+        this.mapsClient = mapsClient;
+
+        this.priceClient = priceClient;
+    }
 
     /**
      * Gathers a list of all vehicles
@@ -50,7 +54,7 @@ public class CarService {
          *   If it does not exist, throw a CarNotFoundException
          *   Remove the below code as part of your implementation.
          */
-
+        Car newCar = Optional.of(this.repository.findById(id)).get().orElseThrow(CarNotFoundException::new);
         /**
          * TODO: Use the Pricing Web client you create in `VehiclesApiApplication`
          *   to get the price based on the `id` input'
@@ -58,7 +62,7 @@ public class CarService {
          * Note: The car class file uses @transient, meaning you will need to call
          *   the pricing service each time to get the price.
          */
-
+        newCar.setPrice(this.priceClient.getPrice(newCar.getId()));
 
         /**
          * TODO: Use the Maps Web client you create in `VehiclesApiApplication`
@@ -69,18 +73,7 @@ public class CarService {
          * meaning the Maps service needs to be called each time for the address.
          */
 
-        Optional<Car> optionalCar = repository.findById(id);
-        Car newCar;
-
-        if (optionalCar.isPresent()){
-            newCar = optionalCar.get();
-        }else {
-            throw new CarNotFoundException();
-        }
-
-        newCar.setPrice(priceClient.getPrice(id));
-
-        newCar.setLocation(mapsClient.getAddress(newCar.getLocation()));
+        newCar.setLocation(this.mapsClient.getAddress(newCar.getLocation()));
         return newCar;
     }
 
@@ -91,19 +84,16 @@ public class CarService {
      */
     public Car save(Car car) {
         if (car.getId() != null) {
-            return repository.findById(car.getId())
+            return this.repository.findById(car.getId())
                     .map(carToBeUpdated -> {
                         carToBeUpdated.setDetails(car.getDetails());
                         carToBeUpdated.setLocation(car.getLocation());
                         carToBeUpdated.setCondition(car.getCondition());
-                        carToBeUpdated.setCreatedAt(car.getCreatedAt());
-                        carToBeUpdated.setPrice(car.getPrice());
-                        carToBeUpdated.setModifiedAt(car.getModifiedAt());
-                        return repository.save(carToBeUpdated);
+                        return this.repository.save(carToBeUpdated);
                     }).orElseThrow(CarNotFoundException::new);
         }
 
-        return repository.save(car);
+        return this.repository.save(car);
     }
 
     /**
@@ -115,16 +105,19 @@ public class CarService {
          * TODO: Find the car by ID from the `repository` if it exists.
          *   If it does not exist, throw a CarNotFoundException
          */
-        try {
-            repository.deleteById(id);
-        } catch (CarNotFoundException e) {
-            throw new CarNotFoundException("Car not found" + e);
-        }
+        Car newCar = Optional.of(this.repository.findById(id)).get().orElseThrow(CarNotFoundException::new);
+
+//        try {
+//            Car deleteCar = Optional.of(this.repository.getOne(id)).get();
+//            this.repository.delete(deleteCar);
+//        } catch (CarNotFoundException e) {
+//            throw new CarNotFoundException("Car not found" + e);
+//        }
 
         /**
          * TODO: Delete the car from the repository.
          */
 
-
+        this.repository.delete(newCar);
     }
 }
